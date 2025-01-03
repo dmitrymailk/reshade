@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 2023 Dominik Wojtasik
+ * SPDX-License-Identifier: MIT
+ *
  * Simple Color Inverter ReShade addon
  */
 
@@ -50,17 +53,17 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 
 	// Invert colors.
 	auto mapped_data = static_cast<uint8_t *>(mapped.data);
-	for (uint32_t y = 0; y < desc.texture.height; ++y)
-	{
-		for (uint32_t x = 0; x < desc.texture.width; ++x)
-		{
-			const uint32_t pixel_index = y * mapped.row_pitch + x * 4; // Assuming RGBA format.
-			mapped_data[pixel_index + 0] = 255 - mapped_data[pixel_index + 0]; // R
-			mapped_data[pixel_index + 1] = 255 - mapped_data[pixel_index + 1]; // G
-			mapped_data[pixel_index + 2] = 255 - mapped_data[pixel_index + 2]; // B
-			// Alpha channel (mapped_data[pixel_index + 3]) is left unchanged.
-		}
-	}
+	//for (uint32_t y = 0; y < desc.texture.height; ++y)
+	//{
+	//	for (uint32_t x = 0; x < desc.texture.width; ++x)
+	//	{
+	//		const uint32_t pixel_index = y * mapped.row_pitch + x * 4; // Assuming RGBA format.
+	//		mapped_data[pixel_index + 0] = 255 - mapped_data[pixel_index + 0]; // R
+	//		mapped_data[pixel_index + 1] = 255 - mapped_data[pixel_index + 1]; // G
+	//		mapped_data[pixel_index + 2] = 255 - mapped_data[pixel_index + 2]; // B
+	//		// Alpha channel (mapped_data[pixel_index + 3]) is left unchanged.
+	//	}
+	//}
 
 	// Unmap staging texture.
 	device->unmap_texture_region(st_texture, 0);
@@ -110,3 +113,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID)
 	}
 	return TRUE;
 }
+// with inversion on max settings 3050ti - 50fps
+// off inversion on max settings 3050ti - 72fps
+// addon off on max settings 3050ti - 90fps 
