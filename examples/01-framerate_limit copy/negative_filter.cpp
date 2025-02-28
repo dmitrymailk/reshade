@@ -1,13 +1,13 @@
-/*
- * Copyright (C) 2023 Dominik Wojtasik
- * SPDX-License-Identifier: MIT
- *
- * Simple Color Inverter ReShade addon
- */
-
+//#define strdup _strdup
+#include <pybind11/pybind11.h>
 #include <reshade.hpp>
+#include <pybind11/embed.h> // everything needed for embedding
+#include <iostream>
+#include <vector>
+#include <pybind11/stl.h>
 
 using namespace reshade::api;
+namespace py = pybind11;
 
 /// <summary>
 /// ReShade addon callback.
@@ -50,20 +50,21 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 		device->destroy_resource(st_texture);
 		return;
 	}
+	//py::module calc = py::module::import("calc");
 
 	// Invert colors.
 	auto mapped_data = static_cast<uint8_t *>(mapped.data);
-	//for (uint32_t y = 0; y < desc.texture.height; ++y)
-	//{
-	//	for (uint32_t x = 0; x < desc.texture.width; ++x)
-	//	{
-	//		const uint32_t pixel_index = y * mapped.row_pitch + x * 4; // Assuming RGBA format.
-	//		mapped_data[pixel_index + 0] = 255 - mapped_data[pixel_index + 0]; // R
-	//		mapped_data[pixel_index + 1] = 255 - mapped_data[pixel_index + 1]; // G
-	//		mapped_data[pixel_index + 2] = 255 - mapped_data[pixel_index + 2]; // B
-	//		// Alpha channel (mapped_data[pixel_index + 3]) is left unchanged.
-	//	}
-	//}
+	for (uint32_t y = 0; y < desc.texture.height; ++y)
+	{
+		for (uint32_t x = 0; x < desc.texture.width; ++x)
+		{
+			const uint32_t pixel_index = y * mapped.row_pitch + x * 4; // Assuming RGBA format.
+			mapped_data[pixel_index + 0] = 255 - mapped_data[pixel_index + 0]; // R
+			mapped_data[pixel_index + 1] = 255 - mapped_data[pixel_index + 1]; // G
+			mapped_data[pixel_index + 2] = 255 - mapped_data[pixel_index + 2]; // B
+			// Alpha channel (mapped_data[pixel_index + 3]) is left unchanged.
+		}
+	}
 
 	// Unmap staging texture.
 	device->unmap_texture_region(st_texture, 0);

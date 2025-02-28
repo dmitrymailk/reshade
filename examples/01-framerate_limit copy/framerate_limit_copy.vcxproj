@@ -57,6 +57,10 @@
   <PropertyGroup Condition="'$(Platform)'=='x64'">
     <TargetExt>.addon64</TargetExt>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
@@ -64,13 +68,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;ImTextureID=ImU64;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\include;..\utils;..\..\deps\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\utils;..\..\deps\imgui;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\Lib\site-packages\pybind11\include\;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\include;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\DLLs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs\python311.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -80,7 +85,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;ImTextureID=ImU64;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\include;..\..\deps\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\utils;..\..\deps\imgui;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6\lib\site-packages\pybind11\include;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6\Include;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6\Lib;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6\libs;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6\libs\python310.lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -97,7 +102,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;ImTextureID=ImU64;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\include;..\..\deps\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\utils;..\..\deps\imgui;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\Lib\site-packages\pybind11\include\;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\include;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\DLLs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -106,6 +111,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalDependencies>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs\python311.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -116,7 +122,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;ImTextureID=ImU64;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\include;..\..\deps\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\utils;..\..\deps\imgui;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\Lib\site-packages\pybind11\include\;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\include;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\DLLs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -128,7 +134,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="negative_filter.cpp" />
+    <ClCompile Include="negative_filter.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\include;..\utils;..\..\deps\imgui;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6\libs;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6\lib\site-packages\pybind11\include;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6\Include;C:\Users\dimweb\.pyenv\pyenv-win\versions\3.10.6;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
