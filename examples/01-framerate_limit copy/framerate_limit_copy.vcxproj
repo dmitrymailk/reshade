@@ -58,8 +58,12 @@
     <TargetExt>.addon64</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>(IncludePath);C:\Users\dimweb\AppData\Local\Programs\Python\Python311\Lib\site-packages\pybind11\include;C:\Users\dimweb\AppData\Local\Programs\Python\Python311\include</IncludePath>
+    <LibraryPath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311\include;C:\Users\dimweb\AppData\Local\Programs\Python\Python311\Lib\site-packages\pybind11\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -75,7 +79,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs\python311.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python311.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -102,16 +106,16 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;ImTextureID=ImU64;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\include;..\utils;..\..\deps\imgui;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\Lib\site-packages\pybind11\include\;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\include;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\DLLs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\utils;..\..\deps\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <AdditionalDependencies>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs\python311.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python311.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

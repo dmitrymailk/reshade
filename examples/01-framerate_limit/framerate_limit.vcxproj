@@ -57,6 +57,9 @@
   <PropertyGroup Condition="'$(Platform)'=='x64'">
     <TargetExt>.addon64</TargetExt>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>

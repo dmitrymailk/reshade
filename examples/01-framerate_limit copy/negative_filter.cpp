@@ -1,13 +1,16 @@
-//#define strdup _strdup
+#include <Python.h>
 #include <pybind11/pybind11.h>
 #include <reshade.hpp>
-#include <pybind11/embed.h> // everything needed for embedding
+//#include <pybind11/embed.h> // everything needed for embedding
 #include <iostream>
 #include <vector>
-#include <pybind11/stl.h>
+//#include <pybind11/stl.h>
+
 
 using namespace reshade::api;
-namespace py = pybind11;
+//namespace py = pybind11;
+
+
 
 /// <summary>
 /// ReShade addon callback.
@@ -15,6 +18,9 @@ namespace py = pybind11;
 /// </summary>
 static void on_present(command_queue *queue, swapchain *swapchain, const rect *, const rect *, uint32_t, const rect *)
 {
+	
+
+
 	// Get the device.
 	device *const device = swapchain->get_device();
 	// Get the back buffer.
@@ -50,7 +56,6 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 		device->destroy_resource(st_texture);
 		return;
 	}
-	//py::module calc = py::module::import("calc");
 
 	// Invert colors.
 	auto mapped_data = static_cast<uint8_t *>(mapped.data);
@@ -85,6 +90,10 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 /// </summary>
 void register_events()
 {
+	/*PyStatus status;
+	PyConfig config;
+	PyConfig_InitPythonConfig(&config);*/
+	
 	reshade::register_event<reshade::addon_event::present>(on_present);
 }
 
@@ -93,11 +102,15 @@ void register_events()
 /// </summary>
 void unregister_events()
 {
+	//py::scoped_interpreter guard {};
 	reshade::unregister_event<reshade::addon_event::present>(on_present);
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID)
 {
+	//py::scoped_interpreter guard {};
+	
+
 	switch (fdwReason)
 	{
 	case DLL_PROCESS_ATTACH:
@@ -114,6 +127,3 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID)
 	}
 	return TRUE;
 }
-// with inversion on max settings 3050ti - 50fps
-// off inversion on max settings 3050ti - 72fps
-// addon off on max settings 3050ti - 90fps 
