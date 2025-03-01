@@ -1,6 +1,7 @@
-import numpy as np
+# import numpy as np
 global_counter = 0
-def add(array: np.ndarray):
+# def add(array: np.ndarray):
+def add(array):
     array = array.reshape(1080, 1920, 4)
     global global_counter 
     global_counter += 1

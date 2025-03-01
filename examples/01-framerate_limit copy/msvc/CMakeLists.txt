@@ -26,7 +26,7 @@ add_custom_target(
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
 	set(ADDON_EXTENSION ".addon32")
 else()
-	set(ADDON_EXTENSION ".addon64")
+	set(ADDON_EXTENSION ".addon")
 endif()
 
 set(CMAKE_SHARED_LIBRARY_SUFFIX ${ADDON_EXTENSION})
