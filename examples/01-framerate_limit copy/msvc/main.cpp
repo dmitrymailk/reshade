@@ -69,23 +69,33 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 
 	// Invert colors.
 	auto mapped_data = static_cast<uint8_t *>(mapped.data);
-	std::vector<int> destination;
+	// std::vector<int> destination;
 	uint32_t data_size = (uint32_t)desc.texture.height * (uint32_t)desc.texture.width * 4;
-	destination.resize(data_size);
-	std::copy(mapped_data, mapped_data + data_size, destination.begin());
+	// destination.resize(data_size);
+	// std::copy(mapped_data, mapped_data + data_size, destination.begin());
 
-	for (uint32_t y = 0; y < desc.texture.height; ++y)
-	{
-		for (uint32_t x = 0; x < desc.texture.width; ++x)
-		{
-			const uint32_t pixel_index = y * mapped.row_pitch + x * 4; // Assuming RGBA format.
-			mapped_data[pixel_index + 0] = 255 - mapped_data[pixel_index + 0]; // R
-			mapped_data[pixel_index + 1] = 255 - mapped_data[pixel_index + 1]; // G
-			mapped_data[pixel_index + 2] = 255 - mapped_data[pixel_index + 2]; // B
-		}
-	}
- 
-	py::object result = calc.attr("add")(1, 20, destination);
+	// invertion via c++
+	// for (uint32_t y = 0; y < desc.texture.height; ++y)
+	// {
+	// 	for (uint32_t x = 0; x < desc.texture.width; ++x)
+	// 	{
+	// 		const uint32_t pixel_index = y * mapped.row_pitch + x * 4; // Assuming RGBA format.
+	// 		mapped_data[pixel_index + 0] = 255 - mapped_data[pixel_index + 0]; // R
+	// 		mapped_data[pixel_index + 1] = 255 - mapped_data[pixel_index + 1]; // G
+	// 		mapped_data[pixel_index + 2] = 255 - mapped_data[pixel_index + 2]; // B
+	// 	}
+	// }
+
+	// Create a NumPy array that points to the existing data.
+	py::array_t<uint8_t> numpy_array(
+		// { (int)desc.texture.height, (int)desc.texture.width, 4 }, // Shape: (height, width, channels)
+		{ (int)desc.texture.height * (int)desc.texture.width * 4 }, // Shape: (height, width, channels)
+		{ 1 },        // Strides: bytes between rows, bytes between columns, bytes between channels
+		mapped_data,                            // Pointer to the data
+		py::capsule(mapped_data, [](void *data) { /* Do nothing.  Resource is managed externally by ReShade. */ }));
+
+	py::array_t<uint8_t> result = calc.attr("add")(numpy_array);
+	std::memcpy(mapped_data, result.data(), data_size);
 	device->unmap_texture_region(st_texture, 0);
 
 	// Copy staging texture back to back buffer.
