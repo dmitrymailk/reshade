@@ -2,21 +2,21 @@
 #include <Python.h>
 #include <pybind11/pybind11.h>
 #include <reshade.hpp>
-#include <pybind11/embed.h> // everything needed for embedding
+#include <pybind11/embed.h> 
 #include <iostream>
 #include <vector>
 #include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 
 
 using namespace reshade::api;
 namespace py = pybind11;
 
 static std::unique_ptr<py::scoped_interpreter> g_python_interpreter;
+py::module calc;
 
-/// <summary>
-/// ReShade addon callback.
-/// See reshade::addon_event::present
-/// </summary>
+
+
 static void on_present(command_queue *queue, swapchain *swapchain, const rect *, const rect *, uint32_t, const rect *)
 {
 
@@ -24,7 +24,12 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 	{
 		// Initialize Python on first use
 		g_python_interpreter = std::make_unique<py::scoped_interpreter>();
+		py::module sys = py::module::import("sys");
+		py::object path = sys.attr("path");
+		path.attr("insert")(0, "C:\\Users\\dimweb\\AppData\\Local\\Programs\\Python\\Python311-32\\Lib\\site-packages\\");
 	}
+	// py::gil_scoped_acquire acquire;
+	calc = py::module_::import("calc");
 
 	// Get the device.
 	device *const device = swapchain->get_device();
@@ -64,6 +69,11 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 
 	// Invert colors.
 	auto mapped_data = static_cast<uint8_t *>(mapped.data);
+	std::vector<int> destination;
+	uint32_t data_size = (uint32_t)desc.texture.height * (uint32_t)desc.texture.width * 4;
+	destination.resize(data_size);
+	std::copy(mapped_data, mapped_data + data_size, destination.begin());
+
 	for (uint32_t y = 0; y < desc.texture.height; ++y)
 	{
 		for (uint32_t x = 0; x < desc.texture.width; ++x)
@@ -74,25 +84,8 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 			mapped_data[pixel_index + 2] = 255 - mapped_data[pixel_index + 2]; // B
 		}
 	}
-
-	std::vector<std::vector<uint8_t>> inverted_data(desc.texture.height, std::vector<uint8_t>(desc.texture.width * 4));
-
-	for (uint32_t y = 0; y < desc.texture.height; ++y)
-	{
-		for (uint32_t x = 0; x < desc.texture.width; ++x)
-		{
-			const uint32_t pixel_index = y * mapped.row_pitch + x * 4; // Assuming RGBA format.
-
-			inverted_data[y][x * 4 + 0] = 255 - mapped_data[pixel_index + 0]; // R
-			inverted_data[y][x * 4 + 1] = 255 - mapped_data[pixel_index + 1]; // G
-			inverted_data[y][x * 4 + 2] = 255 - mapped_data[pixel_index + 2]; // B
-			inverted_data[y][x * 4 + 3] = mapped_data[pixel_index + 3];       // A
-		}
-	}
-	// py::module calc = py::module_::import("D:\\programming\\auto_remaster\\reshade\\examples\\01-framerate_limit copy\\msvc\\build\\Release\\calc.py");
-	py::module calc = py::module_::import("calc");
-	py::object result = calc.attr("add")(1, 20, inverted_data);
-	// Unmap staging texture.
+ 
+	py::object result = calc.attr("add")(1, 20, destination);
 	device->unmap_texture_region(st_texture, 0);
 
 	// Copy staging texture back to back buffer.
@@ -106,32 +99,21 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 	device->destroy_resource(st_texture);
 }
 
-/// <summary>
-/// Registers ReShade addon callbacks.
-/// </summary>
+
 void register_events()
 {
-	/*PyStatus status;
-	PyConfig config;
-	PyConfig_InitPythonConfig(&config);*/
 
 	reshade::register_event<reshade::addon_event::present>(on_present);
 }
 
-/// <summary>
-/// Unregisters ReShade addon callbacks.
-/// </summary>
+
 void unregister_events()
 {
-	//pybind11::scoped_interpreter guard {};
 	reshade::unregister_event<reshade::addon_event::present>(on_present);
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID)
 {
-
-
-
 	switch (fdwReason)
 	{
 	case DLL_PROCESS_ATTACH:
