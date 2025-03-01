@@ -19,7 +19,7 @@ namespace py = pybind11;
 /// </summary>
 static void on_present(command_queue *queue, swapchain *swapchain, const rect *, const rect *, uint32_t, const rect *)
 {
-	
+
 
 
 	// Get the device.
@@ -94,7 +94,7 @@ void register_events()
 	/*PyStatus status;
 	PyConfig config;
 	PyConfig_InitPythonConfig(&config);*/
-	
+
 	reshade::register_event<reshade::addon_event::present>(on_present);
 }
 
@@ -109,8 +109,8 @@ void unregister_events()
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID)
 {
-	//py::scoped_interpreter guard {};
-	
+	// py::scoped_interpreter guard {};
+
 
 	switch (fdwReason)
 	{

@@ -8,7 +8,7 @@ project(example)
 set(pybind11_DIR "C:\\Users\\dimweb\\AppData\\Local\\Programs\\Python\\Python311-32\\Lib\\site-packages\\pybind11\\share\\cmake\\pybind11")
 find_package(pybind11 REQUIRED)
 
-add_executable(example main.cpp)
+add_library(example SHARED main.cpp)
 target_link_libraries(example PRIVATE pybind11::embed)
 
 set(RESHADE_INCLUDE_DIR "D:\\programming\\auto_remaster\\reshade\\include")
@@ -22,3 +22,11 @@ add_custom_target(
 	${CMAKE_BINARY_DIR}/
 	DEPENDS ${CMAKE_SOURCE_DIR}/calc.py # Depend on the source file
 )
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	set(ADDON_EXTENSION ".addon32")
+else()
+	set(ADDON_EXTENSION ".addon64")
+endif()
+
+set(CMAKE_SHARED_LIBRARY_SUFFIX ${ADDON_EXTENSION})

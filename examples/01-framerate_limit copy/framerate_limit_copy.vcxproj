@@ -62,8 +62,8 @@
     <LibraryPath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311\include;C:\Users\dimweb\AppData\Local\Programs\Python\Python311\Lib\site-packages\pybind11\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\include;C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\Lib\site-packages\pybind11\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\dimweb\AppData\Local\Programs\Python\Python311-32\libs;C:\Users\dimweb\AppData\Local\Programs\Python\Python311;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
