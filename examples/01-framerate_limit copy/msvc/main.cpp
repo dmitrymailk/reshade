@@ -11,7 +11,7 @@
 using namespace reshade::api;
 namespace py = pybind11;
 
-
+static std::unique_ptr<py::scoped_interpreter> g_python_interpreter;
 
 /// <summary>
 /// ReShade addon callback.
@@ -20,7 +20,11 @@ namespace py = pybind11;
 static void on_present(command_queue *queue, swapchain *swapchain, const rect *, const rect *, uint32_t, const rect *)
 {
 
-
+	if (!g_python_interpreter)
+	{
+		// Initialize Python on first use
+		g_python_interpreter = std::make_unique<py::scoped_interpreter>();
+	}
 
 	// Get the device.
 	device *const device = swapchain->get_device();
@@ -68,10 +72,26 @@ static void on_present(command_queue *queue, swapchain *swapchain, const rect *,
 			mapped_data[pixel_index + 0] = 255 - mapped_data[pixel_index + 0]; // R
 			mapped_data[pixel_index + 1] = 255 - mapped_data[pixel_index + 1]; // G
 			mapped_data[pixel_index + 2] = 255 - mapped_data[pixel_index + 2]; // B
-			// Alpha channel (mapped_data[pixel_index + 3]) is left unchanged.
 		}
 	}
 
+	std::vector<std::vector<uint8_t>> inverted_data(desc.texture.height, std::vector<uint8_t>(desc.texture.width * 4));
+
+	for (uint32_t y = 0; y < desc.texture.height; ++y)
+	{
+		for (uint32_t x = 0; x < desc.texture.width; ++x)
+		{
+			const uint32_t pixel_index = y * mapped.row_pitch + x * 4; // Assuming RGBA format.
+
+			inverted_data[y][x * 4 + 0] = 255 - mapped_data[pixel_index + 0]; // R
+			inverted_data[y][x * 4 + 1] = 255 - mapped_data[pixel_index + 1]; // G
+			inverted_data[y][x * 4 + 2] = 255 - mapped_data[pixel_index + 2]; // B
+			inverted_data[y][x * 4 + 3] = mapped_data[pixel_index + 3];       // A
+		}
+	}
+	// py::module calc = py::module_::import("D:\\programming\\auto_remaster\\reshade\\examples\\01-framerate_limit copy\\msvc\\build\\Release\\calc.py");
+	py::module calc = py::module_::import("calc");
+	py::object result = calc.attr("add")(1, 20, inverted_data);
 	// Unmap staging texture.
 	device->unmap_texture_region(st_texture, 0);
 
@@ -109,7 +129,7 @@ void unregister_events()
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID)
 {
-	// py::scoped_interpreter guard {};
+
 
 
 	switch (fdwReason)

@@ -13,13 +13,13 @@ target_link_libraries(example PRIVATE pybind11::embed)
 
 set(RESHADE_INCLUDE_DIR "D:\\programming\\auto_remaster\\reshade\\include")
 include_directories(${RESHADE_INCLUDE_DIR})
-
+set(GAME_ROOT "D:\\Games\\NeedforSpeedMostWantedOriginal")
 add_custom_target(
 	copy_file_after_build
 	ALL
 	COMMAND ${CMAKE_COMMAND} -E copy
 	${CMAKE_SOURCE_DIR}/calc.py
-	${CMAKE_BINARY_DIR}/
+	${GAME_ROOT}/
 	DEPENDS ${CMAKE_SOURCE_DIR}/calc.py # Depend on the source file
 )
 
