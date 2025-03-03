@@ -1,0 +1,6 @@
+*.pyc
+*.bytes
+*.npy
+*.pickle
+*.test
+*.exe
