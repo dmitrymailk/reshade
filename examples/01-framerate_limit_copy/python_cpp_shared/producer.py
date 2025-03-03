@@ -34,7 +34,7 @@ try:
         int_array[i] = int_array[i] + 5
 
     print("Array modified. Signaling completion...")
-
+    win32event.WaitForSingleObject()
     # --- Signal the semaphore ---
     win32event.ReleaseSemaphore(hSemaphore, 1)  # Increment the semaphore count
 
