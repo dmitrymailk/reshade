@@ -1,41 +1,40 @@
 import grpc
 import image_service_pb2
 import image_service_pb2_grpc
-from PIL import Image
 import io
+from PIL import Image
 
-def run():
-    # Read the image file
-    image_path = "test_image.jpg" # Replace with your image path
-    try:
-        with open(image_path, "rb") as image_file:
-            image_data = image_file.read()
+def send_image(image_path, image_format):
+    with open(image_path, 'rb') as f:
+        image_data = f.read()
 
-        image = Image.open(image_path)
-        image_format = image.format.lower()  # Get the image format (e.g., jpeg, png)
+    with grpc.insecure_channel('localhost:50051') as channel:
+        stub = image_service_pb2_grpc.ImageServiceStub(channel)
+        request = image_service_pb2.ImageRequest(image_data=image_data, image_format=image_format)
+        response = stub.SendImage(request)
 
-        # Create a gRPC channel to connect to the server
-        with grpc.insecure_channel('localhost:50051') as channel:
-            stub = image_service_pb2_grpc.ImageServiceStub(channel)
+        if response.success:
+            received_image_data = response.image_data  # Access image data from the dedicated field
 
-            # Create an ImageRequest message
-            request = image_service_pb2.ImageRequest(image_data=image_data, image_format=image_format)
+            # Save the received image to a file
+            output_path = "received_image.jpg"
+            with open(output_path, 'wb') as outfile:
+                outfile.write(received_image_data)
+            print(f"Image saved to: {output_path}")
+            print("Server message: " + response.message)
+        else:
+            print("Server response: " + response.message)
 
-            # Send the image to the server
-            try:
-                response = stub.SendImage(request)
-
-                if response.success:
-                    print("Server response:", response.message)
-                else:
-                    print("Server error:", response.message)  # Handle server-side errors
-            except grpc.RpcError as e:
-                print(f"gRPC error: {e.code()} {e.details()}") # Handle client-side gRPC errors
-    except FileNotFoundError:
-        print(f"Error: Image file not found at {image_path}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
+        print("Success: " + str(response.success))
 
 if __name__ == '__main__':
-    run()
+    image_path = "test_image.jpg"
+    image_format = "jpeg"
+
+    # try:
+    #     img = Image.new('RGB', (100, 100), color='red')
+    #     img.save(image_path, "JPEG")
+    # except FileNotFoundError:
+    #     print("Warning: Could not create dummy JPEG.  Ensure PIL is installed.")
+
+    send_image(image_path, image_format)
