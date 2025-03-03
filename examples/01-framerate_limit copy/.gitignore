@@ -1,0 +1,5 @@
+*.pyc
+*.bytes
+*.npy
+*.pickle
+*.test

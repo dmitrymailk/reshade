@@ -5,7 +5,7 @@ project(example)
 
 # pip install "pybind11[global]"
 # python -c "import pybind11; print(pybind11.__path__)"
-set(pybind11_DIR "C:\\Users\\dimweb\\AppData\\Local\\Programs\\Python\\Python311-32\\Lib\\site-packages\\pybind11\\share\\cmake\\pybind11")
+set(pybind11_DIR "C:\\Users\\dimweb\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\pybind11\\share\\cmake\\pybind11")
 find_package(pybind11 REQUIRED)
 
 add_library(example SHARED main.cpp)
