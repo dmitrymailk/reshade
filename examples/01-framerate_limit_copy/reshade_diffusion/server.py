@@ -152,9 +152,9 @@ while True:
 
         # cuda_image = cuda_image.unsqueeze(0)
         cuda_image = cuda_image_t(cuda_image.permute(2, 0, 1)).unsqueeze(0)
-        # cuda_image = (cuda_image / 255).to(torch.float16)
-        # cuda_image = model(cuda_image)
-        # cuda_image = cuda_image * 0.5 + 0.5
+        cuda_image = (cuda_image / 255).to(torch.float16)
+        cuda_image = model(cuda_image)
+        cuda_image = (cuda_image * 0.5 + 0.5) * 255
         input_height = cuda_image.shape[2]
         input_width = cuda_image.shape[3]
 
@@ -166,13 +166,14 @@ while True:
 
         black_image = torch.zeros(
             (original_height, original_width, 3),
-            dtype=cuda_image.dtype,
+            dtype=torch.uint8,
             device=cuda_image.device,
         )
         cuda_image.squeeze_(0)
+        cuda_image = (cuda_image).permute(1, 2, 0).to(torch.uint8)
         black_image[
             pad_top : pad_top + input_height, pad_left : pad_left + input_width, :
-        ] = cuda_image.permute(1, 2, 0)
+        ] = cuda_image
 
         # cuda_image[:, :100, :100, :3 ] = 255
         # cuda_image.squeeze_(0)
