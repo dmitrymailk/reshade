@@ -145,7 +145,8 @@ while True:
         print("cpu_image", cpu_image.shape)
         # cuda_image = cpu_image.cuda().reshape((4, HEIGHT, WIDTH))
         cuda_image = cpu_image.cuda().reshape((HEIGHT, WIDTH, 4))
-        cuda_image = cuda_image[:, :, :3]
+        # cuda_image = cuda_image[:, :, :3]
+        cuda_image = cuda_image[:, :, [2, 1, 0]]
         # initial_image = torch.ones((4, HEIGHT, WIDTH), dtype=torch.uint8)
         initial_image = torch.ones((HEIGHT, WIDTH, 4), dtype=torch.uint8)
         initial_image = 255 * initial_image
@@ -171,6 +172,7 @@ while True:
         )
         cuda_image.squeeze_(0)
         cuda_image = (cuda_image).permute(1, 2, 0).to(torch.uint8)
+        cuda_image = cuda_image[:, :, [2, 1, 0]]
         black_image[
             pad_top : pad_top + input_height, pad_left : pad_left + input_width, :
         ] = cuda_image
