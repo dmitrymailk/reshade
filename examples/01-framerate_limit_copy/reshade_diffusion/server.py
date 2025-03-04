@@ -141,13 +141,8 @@ while True:
             shm.buf,
             dtype=torch.uint8,
         )
-        torch.save(cpu_image, "image.pt")
-        print("cpu_image", cpu_image.shape)
-        # cuda_image = cpu_image.cuda().reshape((4, HEIGHT, WIDTH))
         cuda_image = cpu_image.cuda().reshape((HEIGHT, WIDTH, 4))
-        # cuda_image = cuda_image[:, :, :3]
         cuda_image = cuda_image[:, :, [2, 1, 0]]
-        # initial_image = torch.ones((4, HEIGHT, WIDTH), dtype=torch.uint8)
         initial_image = torch.ones((HEIGHT, WIDTH, 4), dtype=torch.uint8)
         initial_image = 255 * initial_image
 
@@ -177,13 +172,6 @@ while True:
             pad_top : pad_top + input_height, pad_left : pad_left + input_width, :
         ] = cuda_image
 
-        # cuda_image[:, :100, :100, :3 ] = 255
-        # cuda_image.squeeze_(0)
-        print(cuda_image.shape)
-        print(black_image.shape)
-        # cuda_image[:, :100, :100] = 0
-        # black_image.squeeze_(0)
-        # initial_image[:, :, :3] = cuda_image
         initial_image[:, :, :3] = black_image
         cpu_image.copy_(initial_image.flatten().cpu())
         global_counter += 1
