@@ -108,6 +108,23 @@ cuda_image_t = transforms.Compose(
     ]
 )
 
+original_height = HEIGHT
+original_width = WIDTH
+input_height = 512
+input_width = 512
+
+pad_top = (original_height - input_height) // 2
+pad_left = (original_width - input_width) // 2
+
+black_image = torch.zeros(
+    (original_height, original_width, 3),
+    dtype=torch.uint8,
+    device="cuda",
+)
+
+initial_image = torch.ones((HEIGHT, WIDTH, 4), dtype=torch.uint8)
+initial_image = 255 * initial_image
+
 while True:
     # Wait for the semaphore to be signaled
     result = win32event.WaitForSingleObject(python_sem, win32event.INFINITE)
@@ -143,31 +160,16 @@ while True:
         )
         cuda_image = cpu_image.cuda().reshape((HEIGHT, WIDTH, 4))
         cuda_image = cuda_image[:, :, [2, 1, 0]]
-        initial_image = torch.ones((HEIGHT, WIDTH, 4), dtype=torch.uint8)
-        initial_image = 255 * initial_image
-
-        # cuda_image = cuda_image.unsqueeze(0)
+        
         cuda_image = cuda_image_t(cuda_image.permute(2, 0, 1)).unsqueeze(0)
         cuda_image = (cuda_image / 255).to(torch.float16)
         cuda_image = model(cuda_image)
-        cuda_image = (cuda_image * 0.5 + 0.5) * 255
-        input_height = cuda_image.shape[2]
-        input_width = cuda_image.shape[3]
-
-        original_height = HEIGHT
-        original_width = WIDTH
-
-        pad_top = (original_height - input_height) // 2
-        pad_left = (original_width - input_width) // 2
-
-        black_image = torch.zeros(
-            (original_height, original_width, 3),
-            dtype=torch.uint8,
-            device=cuda_image.device,
-        )
+        # cuda_image = (cuda_image * 0.5 + 0.5) * 255
+        cuda_image.mul_(0.5).add_(0.5).mul_(255)
         cuda_image.squeeze_(0)
         cuda_image = (cuda_image).permute(1, 2, 0).to(torch.uint8)
         cuda_image = cuda_image[:, :, [2, 1, 0]]
+        
         black_image[
             pad_top : pad_top + input_height, pad_left : pad_left + input_width, :
         ] = cuda_image
