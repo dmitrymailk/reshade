@@ -87,11 +87,14 @@ import os
 print(os.getcwd())
 
 model.set_eval()
+# nfs_pix2pix_1739912522 - более стабильна
 model.unet = model.unet.from_pretrained(
     "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1740323104/model_15001/unet"
+    # "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1739912522/model_15001/unet"
 )
 model.vae = model.vae.from_pretrained(
     "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1740323104/model_15001/vae"
+    # "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1739912522/model_15001/vae"
 )
 model.unet = model.unet.to(model.sched.betas.dtype).cuda()
 model.vae = model.vae.to(model.sched.betas.dtype).cuda()
@@ -160,8 +163,12 @@ while True:
         )
         cuda_image = cpu_image.cuda().reshape((HEIGHT, WIDTH, 4))
         cuda_image = cuda_image[:, :, [2, 1, 0]]
-        
+        original_cuda_image = cuda_image.clone()
+
         cuda_image = cuda_image_t(cuda_image.permute(2, 0, 1)).unsqueeze(0)
+        original_cuda_image = cuda_image_t(
+            original_cuda_image.permute(2, 0, 1)
+        ).unsqueeze(0)
         cuda_image = (cuda_image / 255).to(torch.float16)
         cuda_image = model(cuda_image)
         # cuda_image = (cuda_image * 0.5 + 0.5) * 255
@@ -169,9 +176,31 @@ while True:
         cuda_image.squeeze_(0)
         cuda_image = (cuda_image).permute(1, 2, 0).to(torch.uint8)
         cuda_image = cuda_image[:, :, [2, 1, 0]]
-        
+
+        original_cuda_image.squeeze_(0)
+        original_cuda_image = original_cuda_image.permute(1, 2, 0)
+        original_cuda_image = original_cuda_image[:, :, [2, 1, 0]]
+
+        # black_image[
+        #     pad_top : pad_top + input_height, pad_left : pad_left + input_width, :
+        # ] = cuda_image
+        original_image_x_offset = pad_left // 2
+        transformed_image_x_offset = pad_left // 2 + input_width  # Shift to the right
+
+        # Check if enough space is available
+        # if transformed_image_x_offset + input_width > black_image.shape[1]:
+        #     print("Warning: Not enough space in black_image for both images side-by-side. Consider increasing width of black_image")
+
         black_image[
-            pad_top : pad_top + input_height, pad_left : pad_left + input_width, :
+            pad_top : pad_top + input_height,
+            original_image_x_offset : original_image_x_offset + input_width,
+            :,
+        ] = original_cuda_image
+
+        black_image[
+            pad_top : pad_top + input_height,
+            transformed_image_x_offset : transformed_image_x_offset + input_width,
+            :,
         ] = cuda_image
 
         initial_image[:, :, :3] = black_image
