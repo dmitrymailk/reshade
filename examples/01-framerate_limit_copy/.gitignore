@@ -4,3 +4,5 @@
 *.pickle
 *.test
 *.exe
+.venv
+venv
