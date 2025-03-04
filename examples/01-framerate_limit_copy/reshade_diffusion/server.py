@@ -89,12 +89,12 @@ print(os.getcwd())
 model.set_eval()
 # nfs_pix2pix_1739912522 - более стабильна
 model.unet = model.unet.from_pretrained(
-    "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1740323104/model_15001/unet"
-    # "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1739912522/model_15001/unet"
+    # "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1740323104/model_15001/unet"
+    "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1739912522/model_15001/unet"
 )
 model.vae = model.vae.from_pretrained(
-    "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1740323104/model_15001/vae"
-    # "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1739912522/model_15001/vae"
+    # "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1740323104/model_15001/vae"
+    "img2img_turbo/output/pix2pix_light/nfs_pix2pix_1739912522/model_15001/vae"
 )
 model.unet = model.unet.to(model.sched.betas.dtype).cuda()
 model.vae = model.vae.to(model.sched.betas.dtype).cuda()
@@ -106,7 +106,7 @@ new_width = int(512 * aspect_ratio)
 # cuda_image = torch.tensor(np.array(input_image)).permute(2, 0, 1).cuda()
 cuda_image_t = transforms.Compose(
     [
-        transforms.Resize((512, new_width), antialias=False),
+        transforms.Resize((512, new_width), antialias=not False),
         transforms.CenterCrop(512),
     ]
 )
